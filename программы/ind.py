@@ -1,6 +1,6 @@
 import json
 import sys
-
+from jsonschema import validate, ValidationError
 
 def get_route():
     """
@@ -45,7 +45,7 @@ def display_route(routes):
                     idx,
                     worker.get('start', ''),
                     worker.get('finish', ''),
-                    worker.get('zodiac', 0)
+                    worker.get('zodiac', '')
                 )
             )
         print(line)
@@ -77,8 +77,34 @@ def load_routes(file_name):
     """
     Загрузить данные из файла JSON
     """
-    with open(file_name, "r", encoding="utf-8") as fin:
-        return json.load(fin)
+    schema = {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "start": {"type": "string"},
+                "finish": {"type": "string"},
+                "zodiac": {"type": "string"},
+            },
+            "required": [
+                "start",
+                "finish",
+                "zodiac",
+            ],
+        },
+    }
+    # Открыть файл с заданным именем и прочитать его содержимое.
+    with open(file_name, "r") as file_in:
+        data = json.load(file_in)  # Прочитать данные из файла
+
+    try:
+        # Валидация
+        validate(instance=data, schema=schema)
+        print("JSON валиден по схеме.")
+    except ValidationError as e:
+        print(f"Ошибка валидации: {e.message}")
+
+    return data  # Вернуть загруженные и проверенные данные
 
 
 def main():
