@@ -2,7 +2,7 @@ import json
 import sys
 from jsonschema import validate, ValidationError
 
-def get_route():
+def get_zodiac():
     """
     Запросить данные о списке
     """
@@ -17,11 +17,11 @@ def get_route():
     }
 
 
-def display_route(routes):
+def display_zodiac(zodiacs):
     """
     Отобразить список
     """
-    if routes:
+    if zodiacs:
         line = '+-{}-+-{}-+-{}-+-{}-+'.format(
             '-' * 4,
             '-' * 30,
@@ -39,7 +39,7 @@ def display_route(routes):
         )
         print(line)
 
-        for idx, worker in enumerate(routes, 1):
+        for idx, worker in enumerate(zodiacs, 1):
             print(
                 '| {:>4} | {:<30} | {:<20} | {:>14} |'.format(
                     idx,
@@ -53,19 +53,19 @@ def display_route(routes):
         print("Список пуст")
 
 
-def select_route(routes, period):
+def select_zodiacs(zodiacs, period):
     """
     Выбрать зодиак
     """
     result = []
-    for employee in routes:
+    for employee in zodiacs:
         if employee.get('finish') == period:
             result.append(employee)
 
     return result
 
 
-def save_routes(file_name, staff):
+def save_zodiacs(file_name, staff):
     """
     Сохранить данные в файл JSON
     """
@@ -73,7 +73,7 @@ def save_routes(file_name, staff):
         json.dump(staff, fout, ensure_ascii=False, indent=4)
 
 
-def load_routes(file_name):
+def load_zodiacs(file_name):
     """
     Загрузить данные из файла JSON
     """
@@ -111,7 +111,7 @@ def main():
     """
     Главная функция программы
     """
-    routes = []
+    zodiacs = []
 
     while True:
         command = input(">>> ").lower()
@@ -119,31 +119,31 @@ def main():
             break
 
         elif command == 'add':
-            route = get_route()
-            routes.append(route)
-            routes.sort(key=lambda item: int(item.get('zodiac', '').split('.')[2]))
+            zodiac = get_zodiac()
+            zodiacs.append(zodiac)
+            zodiacs.sort(key=lambda item: int(item.get('zodiac', '').split('.')[2]))
 
         elif command == 'list':
-            display_route(routes)
+            display_zodiac(zodiacs)
 
         elif command.startswith('select'):
             parts = command.split(' ', maxsplit=1)
             period = parts[1].strip()  # Получаем название знака Зодиака
-            selected = select_route(routes, period)
+            selected = select_zodiacs(zodiacs, period)
             if selected:
-                display_route(selected)
+                display_zodiac(selected)
             else:
                 print("Нет людей с таким знаком Зодиака.")
 
         elif command.startswith("save "):
             parts = command.split(maxsplit=1)
             file_name = parts[1]
-            save_routes(file_name, routes)
+            save_zodiacs(file_name, zodiacs)
 
         elif command.startswith("load "):
             parts = command.split(maxsplit=1)
             file_name = parts[1]
-            routes = load_routes(file_name)
+            zodiacs = load_zodiacs(file_name)
 
         elif command == 'help':
             print("Список команд:\n")
