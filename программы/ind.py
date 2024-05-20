@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Условие:
+# Для своего варианта лабораторной работы 2.16 необходимо дополнительно реализовать
+# интерфейс командной строки (CLI).
+# Вариант 15
+
 import json
 import sys
 from jsonschema import validate, ValidationError
